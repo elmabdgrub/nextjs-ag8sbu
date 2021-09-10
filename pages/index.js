@@ -1,16 +1,24 @@
-import Head from 'next/head';
-import styles from '../styles/Home.module.css';
+import { getResourceCollectionFromContext } from "next-drupal"
 
-export default function Home() {
+export default function IndexPage({ articles }) {
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>dfdsfdsfsd</h1>
-      </main>
+    <div>
+      {articles?.length ? (
+        articles.map((node) => (
+          <div key={node.id}>
+            <h1>{node.title}</h1>
+          </div>
+        ))
+      ) : null}
     </div>
-  );
+  )
+}
+
+export async function getStaticProps(context) {
+  return {
+    props: {
+      articles: await getResourceCollectionFromContext("node--article", context)
+      revalidate: 60,
+    },
+  }
 }
